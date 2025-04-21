@@ -58,7 +58,7 @@ func Render(cam *Cam, scene *Scene) *img.Img {
 func calcLighting(scene *Scene, ray *Ray, intersection *Intersection) *vec.Vec3 {
 	matCol := intersection.material.colour
 
-	// "Ambient lighting"
+	// "Ambient" lighting fudge
 	col := matCol.Scale(0.007)
 
 	for l := 0; l < len(scene.lights); l++ {
