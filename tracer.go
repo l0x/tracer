@@ -24,12 +24,6 @@ func main() {
 		metallic:      0.2,
 		colour:        vec.Vec3{0.05, 0.0, 0.03},
 	}
-	// green := Material{
-	// 	specularCoeff: 400.0,
-	// 	reflectivity:  0.0,
-	// 	colour:        vec.Vec3{0.8, 0.8, 0.8},
-	// 	metallic:      0.4,
-	// }
 
 	//seed := time.Now().UnixNano()
 
@@ -52,7 +46,7 @@ func main() {
 				},
 				radius: 0.2 + (r.Float64() * 0.4),
 				material: &Material{
-					specularCoeff: 10.0,
+					specularCoeff: 1000.0,
 					reflectivity:  0.0,
 					colour:        vec.Vec3{r.Float64() * 0.8, r.Float64() * 0.8, r.Float64() * 0.8},
 					metallic:      0.9,
@@ -65,11 +59,11 @@ func main() {
 
 	keyLight := Light{
 		position:   vec.Vec3{X: 6, Y: 8, Z: -6},
-		brightness: 300,
+		brightness: 180,
 	}
 	fillLight := Light{
 		position:   vec.Vec3{X: -10, Y: 1, Z: -10},
-		brightness: 50,
+		brightness: 40,
 	}
 
 	scene := Scene{

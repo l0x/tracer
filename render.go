@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"sync"
 
 	"penrodyn.com/tracer/internal/img"
 	"penrodyn.com/tracer/internal/vec"
@@ -26,32 +27,36 @@ func Render(cam *Cam, scene *Scene) *img.Img {
 	xStep := left.Scale((canvasWidth * -1) / float64(cam.xRes)) // -1, so right
 
 	// start in the top left
-	p := canvasCenter.Add(up.Scale(canvasHeight / 2.0)).Add(left.Scale(canvasWidth / 2.0))
+	tl := canvasCenter.Add(up.Scale(canvasHeight / 2.0)).Add(left.Scale(canvasWidth / 2.0))
+
+	var wg sync.WaitGroup
+	wg.Add(cam.yRes)
 
 	// Fire a Ray through each pixel
 	for y := 0; y < cam.yRes; y++ {
-		for x := 0; x < cam.xRes; x++ {
-			ray := NewRay(p, p.Sub(cam.pos).Norm())
+		go func(y int) {
+			defer wg.Done()
+			for x := 0; x < cam.xRes; x++ {
+				p := tl.Add(yStep.Scale(float64(y)).Add(xStep.Scale(float64(x))))
+				ray := NewRay(p, p.Sub(cam.pos).Norm())
 
-			var pxVal *vec.Vec3
+				var pxVal *vec.Vec3
 
-			intersection := ray.Trace(scene)
-			if intersection != nil {
-				pxVal = calcLighting(scene, ray, intersection)
-			} else {
-				pxVal = scene.GetBackground(ray)
+				intersection := ray.Trace(scene)
+				if intersection != nil {
+					pxVal = calcLighting(scene, ray, intersection)
+				} else {
+					pxVal = scene.GetBackground(ray)
+				}
+
+				// Apply gamma correction
+				pxVal.PowInPlace(1.0 / 2.2)
+				image.SetPixel(x, y, uint8(pxVal.X*255), uint8(pxVal.Y*255), uint8(pxVal.Z*255))
 			}
-
-			// Apply gamma correction
-			pxVal.PowInPlace(1.0 / 2.2)
-			image.SetPixel(x, y, uint8(pxVal.X*255), uint8(pxVal.Y*255), uint8(pxVal.Z*255))
-
-			// Step in X
-			p.Translate(xStep)
-		}
-		// Step in Y and reset X
-		p.Translate(xStep.Scale(float64(cam.xRes) * -1.0).Add(yStep))
+		}(y)
 	}
+
+	wg.Wait()
 	return image
 }
 
