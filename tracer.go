@@ -52,10 +52,10 @@ func main() {
 				},
 				radius: 0.2 + (r.Float64() * 0.4),
 				material: &Material{
-					specularCoeff: 400.0,
+					specularCoeff: 1000.0,
 					reflectivity:  0.0,
 					colour:        vec.Vec3{r.Float64() * 0.8, r.Float64() * 0.8, r.Float64() * 0.8},
-					metallic:      0.4,
+					metallic:      0.9,
 				},
 			},
 		)
