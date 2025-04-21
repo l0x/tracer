@@ -65,11 +65,11 @@ func main() {
 
 	keyLight := Light{
 		position:   vec.Vec3{X: 6, Y: 8, Z: -6},
-		brightness: 180,
+		brightness: 300,
 	}
 	fillLight := Light{
 		position:   vec.Vec3{X: -10, Y: 1, Z: -10},
-		brightness: 40,
+		brightness: 50,
 	}
 
 	scene := Scene{
