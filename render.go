@@ -8,7 +8,7 @@ import (
 	"penrodyn.com/tracer/internal/vec"
 )
 
-const MAX_STEPS = 1500
+const MAX_STEPS = 2000
 const N_REFLECTIONS = 5
 
 func Render(cam *Cam, scene *Scene) *img.Img {
@@ -17,8 +17,10 @@ func Render(cam *Cam, scene *Scene) *img.Img {
 	// Initialise the canvas location in world-space
 	camPointDir := cam.pointingAt.Sub(cam.pos).Norm()
 
-	left := cam.up.Cross(camPointDir).Norm()
-	up := camPointDir.Cross(left).Norm()
+	left := camPointDir.Cross(cam.up).Norm()
+	//left := cam.up.Cross(camPointDir).Norm()
+	up := left.Cross(camPointDir).Norm()
+	//up := camPointDir.Cross(left).Norm()
 
 	canvasCenter := cam.pos.Add(camPointDir.Scale(cam.canvasDist))
 	canvasHeight := 1.0
