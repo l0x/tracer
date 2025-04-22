@@ -78,3 +78,7 @@ func (v *Vec3) PowInPlace(exp float64) {
 	v.Y = math.Pow(v.Y, exp)
 	v.Z = math.Pow(v.Z, exp)
 }
+
+func (v Vec3) Reflect(normal Vec3) Vec3 {
+	return v.Sub(normal.Scale(2 * v.Dot(normal)))
+}

@@ -9,6 +9,7 @@ import (
 )
 
 const MAX_STEPS = 1500
+const N_REFLECTIONS = 5
 
 func Render(cam *Cam, scene *Scene) *img.Img {
 	image := img.NewImg(cam.xRes, cam.yRes)
@@ -44,7 +45,7 @@ func Render(cam *Cam, scene *Scene) *img.Img {
 
 				intersection := ray.Trace(scene)
 				if intersection != nil {
-					pxVal = calcLighting(scene, ray, intersection)
+					pxVal = calcLighting(scene, ray, intersection, N_REFLECTIONS)
 				} else {
 					pxVal = scene.GetBackground(ray)
 				}
@@ -60,11 +61,14 @@ func Render(cam *Cam, scene *Scene) *img.Img {
 	return image
 }
 
-func calcLighting(scene *Scene, ray *Ray, intersection *Intersection) *vec.Vec3 {
-	matCol := intersection.material.colour
+func calcLighting(scene *Scene, ray *Ray, intersection *Intersection, reflections int) *vec.Vec3 {
+	material := intersection.material
 
 	// "Ambient" lighting fudge
-	col := matCol.Scale(0.007)
+	//col := material.colour.Scale(0.007)
+	col := vec.Vec3{0, 0, 0}
+
+	pointJustOffSurface := intersection.pos.Add(intersection.normal.Scale(0.01))
 
 	for l := 0; l < len(scene.lights); l++ {
 		// Light properties
@@ -73,7 +77,7 @@ func calcLighting(scene *Scene, ray *Ray, intersection *Intersection) *vec.Vec3 
 		lightDir := toLight.Norm()
 
 		// Check for shadow
-		shadowRay := NewRay(intersection.pos.Add(intersection.normal.Scale(0.01)), lightDir)
+		shadowRay := NewRay(pointJustOffSurface, lightDir)
 		if shadowRay.Trace(scene) != nil {
 			continue
 		}
@@ -93,11 +97,28 @@ func calcLighting(scene *Scene, ray *Ray, intersection *Intersection) *vec.Vec3 
 		) * intensity
 
 		// combine the components
-		kS := intersection.material.metallic // Specular factor
-		kD := 1.0 - kS                       // Diffuse factor
+		kS := material.metallic // Specular factor
+		kD := 1.0 - kS          // Diffuse factorr
 		illumination := specular*kS + diffuse*kD
 
-		col = col.Add(matCol.Scale(illumination))
+		col = col.Add(material.colour.Scale(illumination))
+	}
+
+	// Reflection
+	if reflections > 0 && material.reflectivity > 0 {
+		reflectRay := NewRay(pointJustOffSurface, ray.direction.Reflect(intersection.normal))
+		intersection := reflectRay.Trace(scene)
+
+		var reflection *vec.Vec3
+		if intersection == nil {
+			reflection = scene.GetBackground(reflectRay)
+		} else {
+			reflection = calcLighting(scene, reflectRay, intersection, reflections-1)
+		}
+
+		// Mix it in
+		col = col.Scale(1.0 - material.reflectivity)
+		col = col.Add(reflection.Scale(material.reflectivity))
 	}
 
 	col.Clamp()
