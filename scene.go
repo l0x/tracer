@@ -8,10 +8,10 @@ type Intersection struct {
 }
 
 type Material struct {
-	specularCoeff float64
-	reflectivity  float64
-	colour        vec.Vec3
-	metallic      float64
+	glossy       float64
+	reflectivity float64
+	colour       vec.Vec3
+	metallic     float64
 }
 
 type Visible interface {

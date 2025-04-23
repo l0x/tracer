@@ -18,31 +18,31 @@ func main() {
 	}
 
 	purple := Material{
-		specularCoeff: 30.0,
-		reflectivity:  0.0,
-		metallic:      0.0,
-		colour:        vec.Vec3{0.5, 0.0, 0.3},
+		glossy:       0.2,
+		reflectivity: 0.0,
+		metallic:     0.0,
+		colour:       vec.Vec3{0.5, 0.0, 0.3},
 	}
 
 	whitePlastic := Material{
-		specularCoeff: 200,
-		reflectivity:  0.0,
-		metallic:      0.3,
-		colour:        vec.Vec3{0.8, 0.8, 0.8},
+		glossy:       0.6,
+		reflectivity: 0.1,
+		metallic:     0.3,
+		colour:       vec.Vec3{0.8, 0.8, 0.8},
 	}
 
 	chrome := Material{
-		specularCoeff: 1200,
-		reflectivity:  0.92,
-		metallic:      0.95,
-		colour:        vec.Vec3{0.8, 0.8, 0.8},
+		glossy:       0.95,
+		reflectivity: 0.92,
+		metallic:     0.95,
+		colour:       vec.Vec3{0.8, 0.8, 0.8},
 	}
 
 	gold := Material{
-		specularCoeff: 50,
-		reflectivity:  0.1,
-		metallic:      0.9,
-		colour:        vec.Vec3{0.9, 0.6, 0.05},
+		glossy:       0.2,
+		reflectivity: 0.0,
+		metallic:     0.96,
+		colour:       vec.Vec3{0.9, 0.6, 0.05},
 	}
 
 	// seed := time.Now().UnixNano()

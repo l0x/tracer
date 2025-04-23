@@ -10,6 +10,8 @@ import (
 
 const MAX_STEPS = 2000
 const N_REFLECTIONS = 5
+const GLOSS_RAMP = 3
+const MAX_SHINY = 2000
 
 func Render(cam *Cam, scene *Scene) *img.Img {
 	image := img.NewImg(cam.xRes, cam.yRes)
@@ -92,10 +94,11 @@ func calcLighting(scene *Scene, ray *Ray, intersection *Intersection, reflection
 		diffuse := math.Max(intersection.normal.Dot(lightDir), 0) * intensity
 
 		// Specular
+		phongCoefficient := math.Pow(material.glossy, GLOSS_RAMP) * MAX_SHINY
 		halfAngle := lightDir.Add(ray.direction.Scale(-1.0)).Norm()
 		specular := math.Pow(
 			math.Max(halfAngle.Dot(intersection.normal), 0),
-			intersection.material.specularCoeff,
+			phongCoefficient,
 		) * intensity
 
 		// combine the components
