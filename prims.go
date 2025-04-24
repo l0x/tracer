@@ -9,11 +9,7 @@ type Sphere struct {
 }
 
 func (s *Sphere) Intersects(ray *Ray) (bool, *Intersection) {
-	fromCenter := ray.pos.Sub(s.origin)
-	dist := fromCenter.Magnitude()
-
-	// if fromCenter := s.origin.Sub(ray.pos); fromCenter.Magnitude() <= s.radius {
-	if dist <= s.radius {
+	if fromCenter := s.origin.Sub(ray.pos); fromCenter.Magnitude() <= s.radius {
 		return true, &Intersection{fromCenter.Norm(), ray.pos, s.material}
 	}
 	return false, nil
