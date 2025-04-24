@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"math/rand"
 	"sync"
 
 	"penrodyn.com/tracer/internal/img"
@@ -12,6 +13,7 @@ const MAX_STEPS = 2000
 const N_REFLECTIONS = 5
 const GLOSS_RAMP = 3
 const MAX_SHINY = 2000
+const GLOSSY_REFLECTIONS = false
 
 func Render(cam *Cam, scene *Scene) *img.Img {
 	image := img.NewImg(cam.xRes, cam.yRes)
@@ -111,7 +113,18 @@ func calcLighting(scene *Scene, ray *Ray, intersection *Intersection, reflection
 
 	// Reflection
 	if reflections > 0 && material.reflectivity > 0 {
-		reflectRay := NewRay(pointJustOffSurface, ray.direction.Reflect(intersection.normal))
+		reflected := ray.direction.Reflect(intersection.normal)
+
+		// Perturb it by using material glossyness parameter
+		if GLOSSY_REFLECTIONS {
+			perturbed := perturb(reflected)
+			if perturbed.Dot(intersection.normal) < 0 {
+				perturbed = perturbed.Scale(-1)
+			}
+			reflected = reflected.Norm().Lerp(perturbed.Norm(), 1.0-material.glossy).Norm()
+		}
+
+		reflectRay := NewRay(pointJustOffSurface, reflected)
 		intersection := reflectRay.Trace(scene)
 
 		var reflection *vec.Vec3
@@ -128,4 +141,37 @@ func calcLighting(scene *Scene, ray *Ray, intersection *Intersection, reflection
 
 	col.Clamp()
 	return &col
+}
+
+func CosineSampleHemisphere() vec.Vec3 {
+	u1 := rand.Float64()
+	u2 := rand.Float64()
+
+	r := math.Sqrt(u1)
+	theta := 2 * math.Pi * u2
+
+	x := r * math.Cos(theta)
+	y := r * math.Sin(theta)
+	z := math.Sqrt(1 - u1)
+
+	return vec.Vec3{x, y, z}
+}
+
+func perturb(dir vec.Vec3) vec.Vec3 {
+	local := CosineSampleHemisphere()
+
+	// make orthonormal basis from direction
+	var u vec.Vec3
+	if math.Abs(dir.X) > math.Abs(dir.Z) {
+		u = vec.Vec3{-dir.Y, dir.X, 0}
+	} else {
+		u = vec.Vec3{0, -dir.Z, dir.Y}
+	}
+
+	u = u.Norm()
+	v := dir.Cross(u)
+	w := dir.Norm()
+
+	// Rotate the sample relative to the direction
+	return u.Scale(local.X).Add(v.Scale(local.Y)).Add(w.Scale(local.Z))
 }

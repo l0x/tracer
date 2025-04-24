@@ -55,6 +55,14 @@ func (a Vec3) Dot(b Vec3) float64 {
 	return a.X*b.X + a.Y*b.Y + a.Z*b.Z
 }
 
+func (a Vec3) Lerp(b Vec3, mix float64) Vec3 {
+	return Vec3{
+		X: a.X*(1.0-mix) + (b.X * mix),
+		Y: a.Y*(1.0-mix) + (b.Y * mix),
+		Z: a.Z*(1.0-mix) + (b.Z * mix),
+	}
+}
+
 func (v *Vec3) Translate(by Vec3) {
 	v.X += by.X
 	v.Y += by.Y

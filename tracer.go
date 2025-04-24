@@ -12,8 +12,8 @@ func main() {
 		pos:        vec.Vec3{X: 0, Y: 3, Z: -4},
 		pointingAt: vec.Vec3{X: 0, Y: 0, Z: 0},
 		up:         vec.Vec3{X: 0, Y: 1, Z: 0},
-		xRes:       1600,
-		yRes:       1200,
+		xRes:       800,
+		yRes:       600,
 		canvasDist: 1.0,
 	}
 
@@ -70,18 +70,18 @@ func main() {
 		},
 	)
 
-	keyLight := Light{
+	keyLight := PointLight{
 		position:   vec.Vec3{X: -3, Y: 3, Z: -5},
 		brightness: 40,
 	}
-	fillLight := Light{
+	fillLight := PointLight{
 		position:   vec.Vec3{X: 2, Y: 1, Z: -3},
 		brightness: 3,
 	}
 
 	scene := Scene{
 		objects:    sceneObjects,
-		lights:     []Light{keyLight, fillLight},
+		lights:     []PointLight{keyLight, fillLight},
 		background: vec.Vec3{0.0, 0.0, 0.0},
 	}
 

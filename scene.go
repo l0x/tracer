@@ -18,14 +18,14 @@ type Visible interface {
 	Intersects(ray *Ray) (bool, *Intersection)
 }
 
-type Light struct {
+type PointLight struct {
 	position   vec.Vec3
 	brightness float64
 }
 
 type Scene struct {
 	objects    []Visible
-	lights     []Light
+	lights     []PointLight
 	background vec.Vec3
 }
 
