@@ -30,3 +30,12 @@ func (p *Plane) Intersects(ray *Ray) (bool, *Intersection) {
 	}
 	return false, nil
 }
+
+type Cuboid struct {
+	height, width, depth float64
+	material             *Material
+}
+
+func (c *Cuboid) Intersects(ray *Ray) (bool, *Intersection) {
+	return false, nil
+}
