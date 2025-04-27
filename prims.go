@@ -28,10 +28,31 @@ func (p *Plane) Intersects(ray *Ray) (bool, *Intersection) {
 }
 
 type Cuboid struct {
-	height, width, depth float64
-	material             *Material
+	extent, origin vec.Vec3
+	material       *Material
+}
+
+func NewCuboid(origin, dims vec.Vec3, material *Material) *Cuboid {
+	return &Cuboid{
+		origin:   origin,
+		extent:   origin.Add(dims),
+		material: material,
+	}
 }
 
 func (c *Cuboid) Intersects(ray *Ray) (bool, *Intersection) {
+	p := ray.pos
+
+	if p.X >= c.origin.X && p.X <= c.extent.X &&
+		p.Y >= c.origin.Y && p.Y <= c.extent.Y &&
+		p.Z >= c.origin.Z && p.Z <= c.extent.Z {
+
+		return true, &Intersection{
+			normal:   vec.Vec3{0, 0, 0}, // TODO: WHATS THE NORMAL KENNETH?
+			pos:      p,
+			material: c.material,
+		}
+	}
+
 	return false, nil
 }
