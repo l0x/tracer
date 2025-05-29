@@ -18,6 +18,10 @@ type Visible interface {
 	Intersects(ray *Ray) (bool, *Intersection)
 }
 
+type Analytical interface {
+	Intersect(ray *Ray) (bool, *Intersection)
+}
+
 type PointLight struct {
 	position   vec.Vec3
 	brightness float64
@@ -25,6 +29,7 @@ type PointLight struct {
 
 type Scene struct {
 	objects    []Visible
+	analytic   []Analytical
 	lights     []PointLight
 	background vec.Vec3
 }

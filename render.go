@@ -72,7 +72,7 @@ func calcLighting(scene *Scene, ray *Ray, intersection *Intersection, reflection
 
 	// "Ambient" lighting fudge
 	//col := material.colour.Scale(0.007)
-	col := vec.Vec3{0, 0, 0}
+	col := vec.Vec3{X: 0, Y: 0, Z: 0}
 
 	pointJustOffSurface := intersection.pos.Add(intersection.normal.Scale(0.01))
 
@@ -154,7 +154,7 @@ func CosineSampleHemisphere() vec.Vec3 {
 	y := r * math.Sin(theta)
 	z := math.Sqrt(1 - u1)
 
-	return vec.Vec3{x, y, z}
+	return vec.Vec3{X: x, Y: y, Z: z}
 }
 
 func perturb(dir vec.Vec3) vec.Vec3 {
@@ -163,9 +163,9 @@ func perturb(dir vec.Vec3) vec.Vec3 {
 	// make orthonormal basis from direction
 	var u vec.Vec3
 	if math.Abs(dir.X) > math.Abs(dir.Z) {
-		u = vec.Vec3{-dir.Y, dir.X, 0}
+		u = vec.Vec3{X: -dir.Y, Y: dir.X, Z: 0}
 	} else {
-		u = vec.Vec3{0, -dir.Z, dir.Y}
+		u = vec.Vec3{X: 0, Y: -dir.Z, Z: dir.Y}
 	}
 
 	u = u.Norm()

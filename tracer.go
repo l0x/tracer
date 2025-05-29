@@ -21,38 +21,40 @@ func main() {
 		glossy:       0.2,
 		reflectivity: 0.0,
 		metallic:     0.0,
-		colour:       vec.Vec3{0.5, 0.0, 0.3},
+		colour:       vec.Vec3{X: 0.5, Y: 0.0, Z: 0.3},
 	}
 
 	whitePlastic := Material{
 		glossy:       0.6,
 		reflectivity: 0.1,
 		metallic:     0.3,
-		colour:       vec.Vec3{0.8, 0.8, 0.8},
+		colour:       vec.Vec3{X: 0.8, Y: 0.8, Z: 0.8},
 	}
 
 	chrome := Material{
 		glossy:       0.95,
 		reflectivity: 0.92,
 		metallic:     0.95,
-		colour:       vec.Vec3{0.8, 0.8, 0.8},
+		colour:       vec.Vec3{X: 0.8, Y: 0.8, Z: 0.8},
 	}
 
 	gold := Material{
 		glossy:       0.2,
 		reflectivity: 0.0,
 		metallic:     0.96,
-		colour:       vec.Vec3{0.9, 0.6, 0.05},
+		colour:       vec.Vec3{X: 0.9, Y: 0.6, Z: 0.05},
 	}
 
 	// seed := time.Now().UnixNano()
 	// var seed int64 = 1745249485663317000
 
-	floor := Plane{-1.0, &purple}
-	sceneObjects := []Visible{&floor}
+	floor := FloorPlane{-1.0, &purple}
+	sceneObjects := []Visible{}
+	analyticalObjects := []Analytical{}
+	analyticalObjects = append(analyticalObjects, &floor)
 
-	sceneObjects = append(
-		sceneObjects,
+	analyticalObjects = append(
+		analyticalObjects,
 		&Sphere{
 			origin:   vec.Vec3{X: 0, Y: -0.6, Z: -0.7},
 			radius:   0.4,
@@ -81,8 +83,9 @@ func main() {
 
 	scene := Scene{
 		objects:    sceneObjects,
+		analytic:   analyticalObjects,
 		lights:     []PointLight{keyLight, fillLight},
-		background: vec.Vec3{0.0, 0.0, 0.0},
+		background: vec.Vec3{X: 0.0, Y: 0.0, Z: 0.0},
 	}
 
 	i := Render(&cam, &scene)
