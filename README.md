@@ -16,3 +16,5 @@
  * ambient occlusion
  * translucency / refraction
  * costics?
+
+![Sample output](sample.ppm)
