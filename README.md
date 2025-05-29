@@ -17,4 +17,4 @@
  * translucency / refraction
  * costics?
 
-![Sample output](sample.ppm)
+![Sample output](sample.png)
